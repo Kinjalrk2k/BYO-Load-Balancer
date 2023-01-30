@@ -1,0 +1,11 @@
+{
+  "files.associations": {
+    "*.ejs": "html",
+    "*.html.j2": "jinja-html",
+    "*.html": "html",
+    "*.pl": "prolog",
+    "string.h": "c",
+    "errno.h": "c",
+    "logging.h": "c"
+  }
+}
