@@ -24,4 +24,6 @@
 
 ### A basic Reverse Proxy
 
+### Backlog and connection queue
+
 ### Handling connections in threads
