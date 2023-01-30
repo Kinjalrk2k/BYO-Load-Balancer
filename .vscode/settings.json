@@ -6,6 +6,8 @@
     "*.pl": "prolog",
     "string.h": "c",
     "errno.h": "c",
-    "logging.h": "c"
+    "logging.h": "c",
+    "connection.h": "c",
+    "server.h": "c"
   }
 }

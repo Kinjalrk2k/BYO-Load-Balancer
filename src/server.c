@@ -28,16 +28,16 @@ int accept_incoming_connection(struct socket_connection server_socket) {
      * @brief accept an incomming connection
      * @see https://man7.org/linux/man-pages/man2/accept.2.html
      */
-    int new_connection =
+    int new_connection_fd =
         accept(server_socket.socket_fd, (struct sockaddr *)NULL, NULL);
 
-    if (new_connection == -1) {
+    if (new_connection_fd == -1) {
         perror("Failed to accept incomming connection");
-        close(new_connection);
+        close(new_connection_fd);
         return -1;
     }
 
-    return new_connection;
+    return new_connection_fd;
 }
 
 int connect_to_target(struct socket_connection *target_socket, char *host,

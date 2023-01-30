@@ -15,3 +15,13 @@
 ```sh
 ./scripts/run.sh
 ```
+
+## Learning
+
+### Low level Networking
+
+### Handling incoming requests
+
+### A basic Reverse Proxy
+
+### Handling connections in threads
