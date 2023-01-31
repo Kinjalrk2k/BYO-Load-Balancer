@@ -12,15 +12,36 @@
 #include "../include/connection.h"
 #include "../include/logging.h"
 #include "../include/networking.h"
+#include "../include/round_robin.h"
 #include "../include/server.h"
 #include "../include/threads.h"
 
 int main(int argc, char *argv[]) {
-    int new_connection, bytes_read;
+    struct socket_connection client_socket;
 
-    struct socket_connection client_socket, target_socket;
+    struct target_backend serverA = {"127.0.0.1", 5000, 0};
+    struct target_backend serverB = {"127.0.0.1", 5001, 0};
+    struct target_backend serverC = {"127.0.0.1", 5002, 0};
+    struct target_backend serverD = {"127.0.0.1", 5003, 1};
+    struct target_backend serverE = {"127.0.0.1", 5004, 0};
 
-    // initializ the thread pool
+    insert_to_round_robin(serverA);
+    insert_to_round_robin(serverB);
+    insert_to_round_robin(serverC);
+    insert_to_round_robin(serverD);
+    insert_to_round_robin(serverE);
+
+    logger("%d", get_next_backend().port);
+    logger("%d", get_next_backend().port);
+    logger("%d", get_next_backend().port);
+    logger("%d", get_next_backend().port);
+    logger("%d", get_next_backend().port);
+    logger("%d", get_next_backend().port);
+    logger("%d", get_next_backend().port);
+    logger("%d", get_next_backend().port);
+    logger("%d", get_next_backend().port);
+
+    // initialize the thread pool
     init_thread_pool();
 
     /* Create a listening socket */
