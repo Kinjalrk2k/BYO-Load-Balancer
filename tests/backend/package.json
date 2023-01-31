@@ -4,8 +4,12 @@
   "description": "A test server for the load balancer",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start:serverA": "node serverA",
+    "start:serverB": "node serverB",
+    "start:serverC": "node serverC",
+    "start:serverD": "node serverD",
+    "start:serverE": "node serverE",
+    "start": "concurrently npm:start:* -c dim"
   },
   "author": "Kinjal Raykarmakar",
   "license": "MIT",
