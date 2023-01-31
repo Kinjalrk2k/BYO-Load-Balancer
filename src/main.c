@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 #include "../include/connection.h"
+#include "../include/health_check.h"
 #include "../include/logging.h"
 #include "../include/networking.h"
 #include "../include/round_robin.h"
@@ -31,18 +32,13 @@ int main(int argc, char *argv[]) {
     insert_to_round_robin(serverD);
     insert_to_round_robin(serverE);
 
-    // logger("%d", get_next_backend().port);
-    // logger("%d", get_next_backend().port);
-    // logger("%d", get_next_backend().port);
-    // logger("%d", get_next_backend().port);
-    // logger("%d", get_next_backend().port);
-    // logger("%d", get_next_backend().port);
-    // logger("%d", get_next_backend().port);
-    // logger("%d", get_next_backend().port);
-    // logger("%d", get_next_backend().port);
+    health_check_all_targets();
 
     // initialize the thread pool
     init_thread_pool();
+
+    // initiate interval based health check thread
+    build_passive_health_check_thread();
 
     /* Create a listening socket */
     if (create_server(&client_socket, "127.0.0.1", 2209, 10) < 0) {
