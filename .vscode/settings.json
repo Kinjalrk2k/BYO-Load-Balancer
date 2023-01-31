@@ -8,6 +8,8 @@
     "errno.h": "c",
     "logging.h": "c",
     "connection.h": "c",
-    "server.h": "c"
+    "server.h": "c",
+    "threads.h": "c",
+    "queue.h": "c"
   }
 }
