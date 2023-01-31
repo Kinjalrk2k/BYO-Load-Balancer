@@ -20,4 +20,6 @@ struct target_backend get_next_backend();
 void health_check_all_targets();
 void build_passive_health_check_thread();
 
+void get_health_in_json(char *json);
+
 #endif  // ROUND_ROBIN_H

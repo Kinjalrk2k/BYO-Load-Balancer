@@ -4,6 +4,7 @@
 #include <arpa/inet.h>
 
 struct target_backend {
+    char name[100];
     char host[INET6_ADDRSTRLEN];
     unsigned int port;
     int is_healthy;  // 0 - unhealthy , 1 - healthy

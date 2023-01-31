@@ -8,6 +8,13 @@ void *handle_connection(void *p_new_connection) {
     int bytes_read;
     char buffer[BUFSIZE];
 
+    /* Read the client's request */
+    bytes_read = recv(new_connection, buffer, BUFSIZE - 1, 0);
+
+    if (handle_health_check_report_route(buffer, new_connection) == 1) {
+        return NULL;
+    }
+
     // get the next target
     struct target_backend target = get_next_backend();
 
@@ -15,9 +22,6 @@ void *handle_connection(void *p_new_connection) {
     if (connect_to_target(&target_socket, target.host, target.port) < 0) {
         return NULL;
     }
-
-    /* Read the client's request */
-    bytes_read = recv(new_connection, buffer, BUFSIZE - 1, 0);
 
     /* Forward the client's request to the target server */
     send(target_socket.socket_fd, buffer, strlen(buffer), 0);
@@ -59,4 +63,38 @@ void connection_loop(struct socket_connection client_socket) {
 
         enqueue_connection(p_new_connection);
     }
+}
+
+// TODO: use malloc to use memory better
+// 1 - was a health report route , 1 - otherwise
+int handle_health_check_report_route(char *request_buffer, int new_connection) {
+    int flag = 0;  // return flag
+
+    char *request_copy = (char *)malloc(strlen(request_buffer) + 1);
+    strcpy(request_copy, request_buffer);
+    char *url = parse_url(request_copy);
+
+    if (strcmp(url, "/__health") == 0) {
+        flag = 1;
+
+        logger("Health report route called!");
+        const int response_buffer_size = 262144;  // 256 KB
+        char response[response_buffer_size];
+
+        char response_body[65536];
+        get_health_in_json(response_body);
+        char response_body_length_str[5];
+        sprintf(response_body_length_str, "%d", (int)strlen(response_body));
+
+        add_status_code_to_response(response, "200", "HTTP/1.1");
+        add_header_to_response(response, "Content-Type", "application/json");
+        add_header_to_response(response, "Content-Length",
+                               response_body_length_str);
+        add_content_to_response(response, response_body);
+
+        send(new_connection, response, sizeof(response), 0);
+    }
+
+    free(request_copy);
+    return flag;
 }

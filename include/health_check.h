@@ -5,6 +5,7 @@
 #include "./connection.h"
 #include "./networking.h"
 #include "./server.h"
+#include "./utils.h"
 
 #define HTTP_STATUS_OK 200
 

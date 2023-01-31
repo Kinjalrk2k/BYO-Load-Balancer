@@ -20,11 +20,11 @@
 int main(int argc, char *argv[]) {
     struct socket_connection client_socket;
 
-    struct target_backend serverA = {"127.0.0.1", 5000, 1};
-    struct target_backend serverB = {"127.0.0.1", 5001, 1};
-    struct target_backend serverC = {"127.0.0.1", 5002, 1};
-    struct target_backend serverD = {"127.0.0.1", 5003, 1};
-    struct target_backend serverE = {"127.0.0.1", 5004, 1};
+    struct target_backend serverA = {"serverA", "127.0.0.1", 5000, 1};
+    struct target_backend serverB = {"serverB", "127.0.0.1", 5001, 1};
+    struct target_backend serverC = {"serverC", "127.0.0.1", 5002, 1};
+    struct target_backend serverD = {"serverD", "127.0.0.1", 5003, 1};
+    struct target_backend serverE = {"serverE", "127.0.0.1", 5004, 1};
 
     insert_to_round_robin(serverA);
     insert_to_round_robin(serverB);
@@ -32,12 +32,11 @@ int main(int argc, char *argv[]) {
     insert_to_round_robin(serverD);
     insert_to_round_robin(serverE);
 
-    health_check_all_targets();
-
     // initialize the thread pool
     init_thread_pool();
 
-    // initiate interval based health check thread
+    // initial health check and interval based health check thread
+    health_check_all_targets();
     build_passive_health_check_thread();
 
     /* Create a listening socket */

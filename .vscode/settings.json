@@ -11,6 +11,8 @@
     "server.h": "c",
     "threads.h": "c",
     "queue.h": "c",
-    "round_robin.h": "c"
+    "round_robin.h": "c",
+    "health_check.h": "c",
+    "utils.h": "c"
   }
 }

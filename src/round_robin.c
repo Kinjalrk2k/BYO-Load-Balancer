@@ -61,6 +61,7 @@ void health_check_all_targets() {
         temp->backend.is_healthy = health_check_target(temp->backend);
         temp = temp->next;
     }
+    temp->backend.is_healthy = health_check_target(temp->backend);
 
     pthread_mutex_unlock(&round_robin_mutex);
     logger("Health check ended");
@@ -77,4 +78,32 @@ void build_passive_health_check_thread() {
     pthread_t passive_health_check_thread;
     pthread_create(&passive_health_check_thread, NULL, &passive_health_check,
                    NULL);
+}
+
+// TODO: make this better
+void get_health_in_json(char *json) {
+    pthread_mutex_lock(&round_robin_mutex);
+
+    strcpy(json, "{ \"servers\": [");
+
+    struct round_robin_node *temp = round_robin_head;
+    while (temp->next != round_robin_head) {
+        strcat(json, "{ \"name\": \"");
+        strcat(json, temp->backend.name);
+        strcat(json, "\", \"status\": \"");
+        strcat(json, temp->backend.is_healthy == 1 ? "up" : "down");
+        strcat(json, "\" }, ");
+
+        temp = temp->next;
+    }
+
+    strcat(json, "{ \"name\": \"");
+    strcat(json, temp->backend.name);
+    strcat(json, "\", \"status\": \"");
+    strcat(json, temp->backend.is_healthy == 1 ? "up" : "down");
+    strcat(json, "\" }, ");
+
+    strcat(json, "\b\b] }");
+
+    pthread_mutex_unlock(&round_robin_mutex);
 }

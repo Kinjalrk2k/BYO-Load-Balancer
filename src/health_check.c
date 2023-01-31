@@ -1,13 +1,5 @@
 #include "../include/health_check.h"
 
-char *parse_status_code(char *response) {
-    const char *seperator = " ";
-    char *token = strtok(response, seperator);
-    token = strtok(NULL, seperator);
-
-    return token;
-}
-
 // 0 - unhealthy , 1 - healthy
 int health_check_target(struct target_backend target) {
     struct socket_connection target_socket;
