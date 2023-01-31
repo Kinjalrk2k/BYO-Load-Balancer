@@ -9,6 +9,7 @@
 
 #include "./networking.h"
 #include "./queue.h"
+#include "./round_robin.h"
 #include "./server.h"
 
 void connection_loop(struct socket_connection client_socket);

@@ -1,6 +1,7 @@
 #ifndef ROUND_ROBIN_H
 #define ROUND_ROBIN_H
 
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 

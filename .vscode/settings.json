@@ -10,6 +10,7 @@
     "connection.h": "c",
     "server.h": "c",
     "threads.h": "c",
-    "queue.h": "c"
+    "queue.h": "c",
+    "round_robin.h": "c"
   }
 }

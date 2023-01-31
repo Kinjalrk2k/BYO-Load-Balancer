@@ -4,7 +4,7 @@ const app = express();
 
 app.get("/", (req, res) => {
   console.log(req.method, req.url);
-  res.json({ msg: "Hello, from Server A" });
+  res.json({ msg: "Hello, from Server B" });
 });
 
 const PORT = 5001;

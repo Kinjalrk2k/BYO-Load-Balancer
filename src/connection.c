@@ -8,8 +8,13 @@ void *handle_connection(void *p_new_connection) {
     int bytes_read;
     char buffer[BUFSIZE];
 
+    // get the next target
+    struct target_backend target = get_next_backend();
+
     /* Create a target socket */
-    if (connect_to_target(&target_socket, "127.0.0.1", 5000) < 0) return NULL;
+    if (connect_to_target(&target_socket, target.host, target.port) < 0) {
+        return NULL;
+    }
 
     /* Read the client's request */
     bytes_read = recv(new_connection, buffer, BUFSIZE - 1, 0);
