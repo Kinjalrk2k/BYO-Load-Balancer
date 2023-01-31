@@ -4,9 +4,11 @@ struct connection_queue_node *connection_queue_head = NULL;
 struct connection_queue_node *connection_queue_tail = NULL;
 
 pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t queue_condition_variable = PTHREAD_COND_INITIALIZER;
 
 void enqueue_connection(int *client_socket_fd) {
     pthread_mutex_lock(&queue_mutex);
+
     struct connection_queue_node *new_node =
         (struct connection_queue_node *)malloc(
             sizeof(struct connection_queue_node));
@@ -20,13 +22,19 @@ void enqueue_connection(int *client_socket_fd) {
         connection_queue_tail->next = new_node;
     }
     connection_queue_tail = new_node;
+
     pthread_mutex_unlock(&queue_mutex);
+    pthread_cond_signal(&queue_condition_variable);
 }
 
 int *dequeue_connection() {
     pthread_mutex_lock(&queue_mutex);
+
     if (connection_queue_head == NULL) {
+        // only wait when there's nothing in the queue
+        pthread_cond_wait(&queue_condition_variable, &queue_mutex);
         pthread_mutex_unlock(&queue_mutex);
+
         return NULL;  // when the queue is empty
     } else {
         int *item = connection_queue_head->p_client_socket_fd;
