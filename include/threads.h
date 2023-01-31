@@ -5,7 +5,7 @@
 
 #include "./connection.h"
 
-#define THREAD_POOL_SIZE 5
+#define THREAD_POOL_SIZE 20
 
 pthread_t thread_pool[THREAD_POOL_SIZE];
 

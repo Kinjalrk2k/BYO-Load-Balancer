@@ -3,10 +3,10 @@
 struct connection_queue_node *connection_queue_head = NULL;
 struct connection_queue_node *connection_queue_tail = NULL;
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void enqueue_connection(int *client_socket_fd) {
-    pthread_mutex_lock(&mutex);
+    pthread_mutex_lock(&queue_mutex);
     struct connection_queue_node *new_node =
         (struct connection_queue_node *)malloc(
             sizeof(struct connection_queue_node));
@@ -20,13 +20,13 @@ void enqueue_connection(int *client_socket_fd) {
         connection_queue_tail->next = new_node;
     }
     connection_queue_tail = new_node;
-    pthread_mutex_unlock(&mutex);
+    pthread_mutex_unlock(&queue_mutex);
 }
 
 int *dequeue_connection() {
-    pthread_mutex_lock(&mutex);
+    pthread_mutex_lock(&queue_mutex);
     if (connection_queue_head == NULL) {
-        pthread_mutex_unlock(&mutex);
+        pthread_mutex_unlock(&queue_mutex);
         return NULL;  // when the queue is empty
     } else {
         int *item = connection_queue_head->p_client_socket_fd;
@@ -38,13 +38,13 @@ int *dequeue_connection() {
         }
         free(temp);
 
-        pthread_mutex_unlock(&mutex);
+        pthread_mutex_unlock(&queue_mutex);
         return item;
     }
 }
 
 int connection_queue_size() {
-    pthread_mutex_lock(&mutex);
+    pthread_mutex_lock(&queue_mutex);
     int count = 0;
     struct connection_queue_node *current = connection_queue_head;
 
@@ -53,6 +53,6 @@ int connection_queue_size() {
         current = current->next;
     }
 
-    pthread_mutex_unlock(&mutex);
+    pthread_mutex_unlock(&queue_mutex);
     return count;
 }
