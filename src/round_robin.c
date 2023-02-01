@@ -1,7 +1,5 @@
 #include "../include/round_robin.h"
 
-pthread_mutex_t round_robin_mutex = PTHREAD_MUTEX_INITIALIZER;
-
 void insert_to_round_robin(struct round_robin_node **round_robin_head,
                            struct target_backend backend) {
     // struct round_robin_node *round_robin_head = *p_round_robin_head;
@@ -56,8 +54,9 @@ struct target_backend get_next_backend(
     return temp->backend;
 }
 
-void health_check_all_targets(struct round_robin_node **round_robin_head) {
-    pthread_mutex_lock(&round_robin_mutex);
+void health_check_all_targets(struct round_robin_node **round_robin_head,
+                              pthread_mutex_t mutex) {
+    pthread_mutex_lock(&mutex);
 
     struct round_robin_node *temp = *round_robin_head;
     while (temp->next != *round_robin_head) {
@@ -66,21 +65,8 @@ void health_check_all_targets(struct round_robin_node **round_robin_head) {
     }
     temp->backend.is_healthy = health_check_target(temp->backend);
 
-    pthread_mutex_unlock(&round_robin_mutex);
+    pthread_mutex_unlock(&mutex);
 }
-
-// void *passive_health_check(void *arg) {
-//     while (1) {
-//         sleep(HEALTH_CHECK_INTERVAL);
-//         health_check_all_targets();
-//     }
-// }
-
-// void build_passive_health_check_thread() {
-//     pthread_t passive_health_check_thread;
-//     pthread_create(&passive_health_check_thread, NULL, &passive_health_check,
-//                    NULL);
-// }
 
 // // TODO: make this better
 // void get_health_in_json(struct round_robin_node *round_robin_head, char

@@ -8,8 +8,6 @@
 #include "./config.h"
 #include "./health_check.h"
 
-#define HEALTH_CHECK_INTERVAL 30  // in seconds
-
 struct round_robin_node {
     struct target_backend backend;
     struct round_robin_node *next;
@@ -21,6 +19,7 @@ struct target_backend get_next_backend(
     struct round_robin_node *round_robin_head,
     struct round_robin_node **round_robin_current, pthread_mutex_t mutex);
 
-void health_check_all_targets(struct round_robin_node **round_robin_head);
+void health_check_all_targets(struct round_robin_node **round_robin_head,
+                              pthread_mutex_t mutex);
 
 #endif  // ROUND_ROBIN_H

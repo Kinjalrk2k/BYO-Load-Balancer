@@ -43,8 +43,6 @@ void configuration() {
 
     target_group_list_sorted_insert(target_group_foo);
     target_group_list_sorted_insert(target_group_bar);
-
-    health_check_all_target_groups();
 }
 
 int main(int argc, char *argv[]) {
@@ -56,10 +54,10 @@ int main(int argc, char *argv[]) {
     init_thread_pool();
 
     // initial health check and interval based health check thread
-    // health_check_all_targets();
-    // build_passive_health_check_thread();
+    health_check_all_target_groups();
+    build_passive_health_check_thread();
 
-    /* Create a listening socket */
+        /* Create a listening socket */
     if (create_server(&client_socket, "127.0.0.1", 2209, 10) < 0) {
         perror("Failed to create the server");
         return 1;

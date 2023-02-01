@@ -28,7 +28,7 @@ void target_group_list_sorted_insert(struct target_group target_group) {
 }
 
 void find_target_group_with_path(char *path, struct target_group **tg) {
-    // pthread_mutex_lock(&target_group_mutex);
+    pthread_mutex_lock(&target_group_mutex);
 
     struct target_group_list_node *temp = target_groups_head;
     struct target_group *default_tg = &target_groups_head->tg;
@@ -44,7 +44,7 @@ void find_target_group_with_path(char *path, struct target_group **tg) {
         regcomp(&path_regex, temp->tg.path, 0);
         regex_result = regexec(&path_regex, path, 0, NULL, 0);
         if (regex_result == 0) {
-            // pthread_mutex_unlock(&target_group_mutex);
+            pthread_mutex_unlock(&target_group_mutex);
             *tg = &temp->tg;
             return;
         }
@@ -52,17 +52,82 @@ void find_target_group_with_path(char *path, struct target_group **tg) {
         temp = temp->next;
     }
 
-    // pthread_mutex_unlock(&target_group_mutex);
+    pthread_mutex_unlock(&target_group_mutex);
     *tg = default_tg;
 }
 
 void health_check_all_target_groups() {
     logger("Health check started");
-    struct target_group_list_node *temp = target_groups_head;
 
+    struct target_group_list_node *temp = target_groups_head;
     while (temp != NULL) {
-        health_check_all_targets(&temp->tg.round_robin_head);
+        health_check_all_targets(&temp->tg.round_robin_head,
+                                 temp->tg.round_robin_mutex);
         temp = temp->next;
     }
+
     logger("Health check ended");
+}
+
+void *passive_health_check(void *arg) {
+    while (1) {
+        sleep(HEALTH_CHECK_INTERVAL);
+        health_check_all_target_groups();
+    }
+}
+
+void build_passive_health_check_thread() {
+    pthread_t passive_health_check_thread;
+    pthread_create(&passive_health_check_thread, NULL, &passive_health_check,
+                   NULL);
+}
+
+void get_health_json(char *json) {
+    pthread_mutex_lock(&target_group_mutex);
+
+    struct target_group_list_node *temp = target_groups_head;
+
+    char tg_health[20000], t_health[20000], rr_health[20000],
+        tg_temp_health[20000];
+    strcpy(tg_health, "");
+    while (temp != NULL) {
+        stpcpy(tg_temp_health, "");
+        sprintf(tg_temp_health,
+                "{ \"path\": \"%s\", \"targets\": ", temp->tg.path);
+        strcat(tg_health, tg_temp_health);
+
+        struct round_robin_node *rr_temp = temp->tg.round_robin_head;
+        strcpy(t_health, "[ ");
+
+        while (rr_temp->next != temp->tg.round_robin_head) {
+            strcpy(rr_health, "");
+            sprintf(rr_health, "{ \"name\": \"%s\", \"status\": \"%s\" }",
+                    rr_temp->backend.name,
+                    rr_temp->backend.is_healthy == 1 ? "up" : "down");
+            strcat(t_health, rr_health);
+            strcat(t_health, ", ");
+            rr_temp = rr_temp->next;
+        }
+        strcpy(rr_health, "");
+        sprintf(rr_health, "{ \"name\": \"%s\", \"status\": \"%s\" }",
+                rr_temp->backend.name,
+                rr_temp->backend.is_healthy == 1 ? "up" : "down");
+        strcat(t_health, rr_health);
+        strcat(t_health, ", ");
+
+        strcat(t_health, "\b\b ]");
+        strcat(tg_health, t_health);
+        strcat(tg_health, " }, ");
+        temp = temp->next;
+    }
+
+    strcat(tg_health, "\b\b ");
+
+    logger("tg_health %s", tg_health);
+
+    strcpy(json, "");
+    // sprintf(json, "{ \"target_groups\": [ %s ] }", tg_health);
+    sprintf(json, "[ %s ]", tg_health);
+
+    pthread_mutex_unlock(&target_group_mutex);
 }
