@@ -19,7 +19,7 @@
 #include "../include/threads.h"
 
 void configuration() {
-    struct target_group target_group_foo = {"/foo/*", 1, NULL, NULL};
+    struct target_group target_group_foo = {"/foo/*", 1, NULL, NULL, 0};
     struct target_backend serverA = {"serverA", "127.0.0.1", 5000, 1};
     struct target_backend serverB = {"serverB", "127.0.0.1", 5001, 1};
     struct target_backend serverC = {"serverC", "127.0.0.1", 5002, 1};
@@ -32,12 +32,17 @@ void configuration() {
     insert_to_round_robin(&target_group_foo.round_robin_head, serverD);
     insert_to_round_robin(&target_group_foo.round_robin_head, serverE);
 
-    struct target_group target_group_bar = {"/bar/*", 1, NULL, NULL};
+    struct target_group target_group_bar = {"/bar/*", 2, NULL, NULL, 0};
     struct target_backend serverF = {"serverF", "127.0.0.1", 5010, 1};
     struct target_backend serverG = {"serverG", "127.0.0.1", 5011, 1};
 
     insert_to_round_robin(&target_group_bar.round_robin_head, serverF);
     insert_to_round_robin(&target_group_bar.round_robin_head, serverG);
+
+    target_group_list_sorted_insert(target_group_foo);
+    target_group_list_sorted_insert(target_group_bar);
+
+    logger("got-> %s", find_target_group_with_path("/b0r/gj").path);
 }
 
 int main(int argc, char *argv[]) {

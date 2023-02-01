@@ -38,4 +38,10 @@
 
 ### Round Robin Algorithm with unhealthy targets
 
+### Linked List
+
+### Target Groups with priority
+
+### Regex path matching for target groups
+
 ### Passive Health checks and reports
