@@ -33,7 +33,6 @@ struct target_group find_target_group_with_path(char *path) {
     int regex_result;
 
     while (temp != NULL) {
-        logger("%s", temp->tg.path);
         if (temp->tg.is_default == 1) {  // found the default!
             default_tg = temp->tg;
         }
@@ -47,6 +46,12 @@ struct target_group find_target_group_with_path(char *path) {
         temp = temp->next;
     }
 
-    logger("default");
     return default_tg;
+}
+
+void health_check_all_target_groups() {
+    struct target_group_list_node *temp = target_groups_head;
+
+    while (temp != NULL) {
+    }
 }

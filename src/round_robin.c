@@ -55,20 +55,20 @@ struct target_backend get_next_backend(
     return temp->backend;
 }
 
-// void health_check_all_targets(struct round_robin_node *round_robin_head) {
-//     logger("Health check started");
-//     pthread_mutex_lock(&round_robin_mutex);
+void health_check_all_targets(struct round_robin_node **round_robin_head) {
+    logger("Health check started");
+    pthread_mutex_lock(&round_robin_mutex);
 
-//     struct round_robin_node *temp = round_robin_head;
-//     while (temp->next != round_robin_head) {
-//         temp->backend.is_healthy = health_check_target(temp->backend);
-//         temp = temp->next;
-//     }
-//     temp->backend.is_healthy = health_check_target(temp->backend);
+    struct round_robin_node *temp = *round_robin_head;
+    while (temp->next != *round_robin_head) {
+        temp->backend.is_healthy = health_check_target(temp->backend);
+        temp = temp->next;
+    }
+    temp->backend.is_healthy = health_check_target(temp->backend);
 
-//     pthread_mutex_unlock(&round_robin_mutex);
-//     logger("Health check ended");
-// }
+    pthread_mutex_unlock(&round_robin_mutex);
+    logger("Health check ended");
+}
 
 // void *passive_health_check(void *arg) {
 //     while (1) {

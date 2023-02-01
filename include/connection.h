@@ -11,6 +11,7 @@
 #include "./queue.h"
 #include "./round_robin.h"
 #include "./server.h"
+#include "./target_group.h"
 #include "./utils.h"
 
 int handle_health_check_report_route(char *request_buffer, int new_connection);

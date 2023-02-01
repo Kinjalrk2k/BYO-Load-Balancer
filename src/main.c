@@ -41,16 +41,12 @@ void configuration() {
 
     target_group_list_sorted_insert(target_group_foo);
     target_group_list_sorted_insert(target_group_bar);
-
-    logger("got-> %s", find_target_group_with_path("/b0r/gj").path);
 }
 
 int main(int argc, char *argv[]) {
     struct socket_connection client_socket;
 
     configuration();
-
-    return 0;
 
     // initialize the thread pool
     init_thread_pool();

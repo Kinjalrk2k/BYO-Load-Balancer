@@ -1,5 +1,22 @@
 #include "../include/connection.h"
 
+// send 1 if already handled or else send 0, if sent -1, then mishandled
+int handle_routing_target(char *request_buffer, struct target_backend *target) {
+    int already_handled = 0;  // return flag
+
+    char *request_copy = (char *)malloc(strlen(request_buffer) + 1);
+    strcpy(request_copy, request_buffer);
+    char *url = parse_url(request_copy);
+
+    struct target_group tg = find_target_group_with_path(url);
+    *target = get_next_backend(tg.round_robin_head, &tg.round_robin_current);
+
+    logger("%s ~~> %s (%s:%d)", url, tg.path, target->host, target->port);
+
+    free(request_copy);
+    return already_handled;
+}
+
 void *handle_connection(void *p_new_connection) {
     int new_connection = *((int *)p_new_connection);
     free(p_new_connection);
@@ -16,10 +33,13 @@ void *handle_connection(void *p_new_connection) {
     // }
 
     // get the next target
-    // struct target_backend target = get_next_backend();
+    struct target_backend target;
+    if (handle_routing_target(buffer, &target) == 1) {
+        return NULL;
+    }
 
     /* Create a target socket */
-    if (connect_to_target(&target_socket, "127.0.0.1", 5000) < 0) {
+    if (connect_to_target(&target_socket, target.host, target.port) < 0) {
         return NULL;
     }
 
