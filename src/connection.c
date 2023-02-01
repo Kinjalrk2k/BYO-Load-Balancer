@@ -1,18 +1,24 @@
 #include "../include/connection.h"
 
 // send 1 if already handled or else send 0, if sent -1, then mishandled
-int handle_routing_target(char *request_buffer, struct target_backend *target) {
+int handle_routing_target(char *request_buffer,
+                          struct target_backend *p_target) {
     int already_handled = 0;  // return flag
 
     char *request_copy = (char *)malloc(strlen(request_buffer) + 1);
     strcpy(request_copy, request_buffer);
     char *url = parse_url(request_copy);
 
-    struct target_group tg = find_target_group_with_path(url);
-    *target = get_next_backend(tg.round_robin_head, &tg.round_robin_current);
+    struct target_group *tg;
+    find_target_group_with_path(url, &tg);
+    struct target_backend target;
+    target = get_next_backend(tg->round_robin_head, &tg->round_robin_current,
+                              tg->round_robin_mutex);
 
-    logger("%s ~~> %s (%s:%d)", url, tg.path, target->host, target->port);
+    // request logging
+    logger("%s ~~> %s (%s:%d)", url, tg->path, target.host, target.port);
 
+    *p_target = target;
     free(request_copy);
     return already_handled;
 }

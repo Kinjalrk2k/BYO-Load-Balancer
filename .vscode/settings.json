@@ -13,6 +13,7 @@
     "queue.h": "c",
     "round_robin.h": "c",
     "health_check.h": "c",
-    "utils.h": "c"
+    "utils.h": "c",
+    "target_group.h": "c"
   }
 }

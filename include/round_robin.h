@@ -19,11 +19,8 @@ void insert_to_round_robin(struct round_robin_node **round_robin_head,
                            struct target_backend backend);
 struct target_backend get_next_backend(
     struct round_robin_node *round_robin_head,
-    struct round_robin_node **round_robin_current);
+    struct round_robin_node **round_robin_current, pthread_mutex_t mutex);
 
-void health_check_all_targets();
-void build_passive_health_check_thread();
-
-void get_health_in_json(char *json);
+void health_check_all_targets(struct round_robin_node **round_robin_head);
 
 #endif  // ROUND_ROBIN_H
