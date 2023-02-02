@@ -9,8 +9,8 @@
     "start:serverC": "PORT=5002 SERVER_NAME=C node basicServer",
     "start:serverD": "PORT=5003 SERVER_NAME=D node basicServer",
     "start:serverE": "PORT=5007 SERVER_NAME=E node basicServer",
-    "start:serverF": "PORT=5010 SERVER_NAME=F node basicServer",
-    "start:serverG": "PORT=5017 SERVER_NAME=G node basicServer",
+    "start:serverF": "PORT=5017 SERVER_NAME=F node basicServer",
+    "start:serverG": "PORT=5011 SERVER_NAME=G node basicServer",
     "start": "concurrently npm:start:* -c dim"
   },
   "author": "Kinjal Raykarmakar",

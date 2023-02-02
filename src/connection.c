@@ -16,7 +16,8 @@ int handle_routing_target(char *request_buffer,
                               tg->round_robin_mutex);
 
     // request logging
-    logger("%s ~~> %s (%s:%d)", url, tg->path, target.host, target.port);
+    logger("%s ~~> %s => %s:%d <%d>", url, tg->path, target.host, target.port,
+           target.is_healthy);
 
     *p_target = target;
     free(request_copy);
