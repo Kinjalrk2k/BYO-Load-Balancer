@@ -57,7 +57,7 @@ void find_target_group_with_path(char *path, struct target_group **tg) {
 }
 
 void health_check_all_target_groups() {
-    logger("Health check started");
+    // logger("Health check started");
 
     struct target_group_list_node *temp = target_groups_head;
     while (temp != NULL) {
@@ -66,7 +66,7 @@ void health_check_all_target_groups() {
         temp = temp->next;
     }
 
-    logger("Health check ended");
+    // logger("Health check ended");
 }
 
 void *passive_health_check(void *arg) {
@@ -87,13 +87,17 @@ void get_health_json(char *json) {
 
     struct target_group_list_node *temp = target_groups_head;
 
-    char tg_health[20000], t_health[20000], rr_health[20000],
-        tg_temp_health[20000];
+    char tg_health[20480], t_health[20480], rr_health[20480],
+        tg_temp_health[20480];
+
     strcpy(tg_health, "");
     while (temp != NULL) {
         stpcpy(tg_temp_health, "");
         sprintf(tg_temp_health,
-                "{ \"path\": \"%s\", \"targets\": ", temp->tg.path);
+                "{ \"path\": \"%s\", \"priority\": %d, \"default\": %s, "
+                "\"targets\": ",
+                temp->tg.path, temp->tg.priority,
+                temp->tg.is_default == 1 ? "true" : "false");
         strcat(tg_health, tg_temp_health);
 
         struct round_robin_node *rr_temp = temp->tg.round_robin_head;
@@ -113,21 +117,16 @@ void get_health_json(char *json) {
                 rr_temp->backend.name,
                 rr_temp->backend.is_healthy == 1 ? "up" : "down");
         strcat(t_health, rr_health);
-        strcat(t_health, ", ");
 
-        strcat(t_health, "\b\b ]");
+        strcat(t_health, " ]");
         strcat(tg_health, t_health);
         strcat(tg_health, " }, ");
         temp = temp->next;
     }
 
-    strcat(tg_health, "\b\b ");
-
-    logger("tg_health %s", tg_health);
-
+    tg_health[strlen(tg_health) - 2] = '\0';
     strcpy(json, "");
-    // sprintf(json, "{ \"target_groups\": [ %s ] }", tg_health);
-    sprintf(json, "[ %s ]", tg_health);
+    sprintf(json, "{ \"target_groups\": [ %s ] }", tg_health);
 
     pthread_mutex_unlock(&target_group_mutex);
 }
