@@ -47,6 +47,7 @@ void *handle_connection(void *p_new_connection) {
 
     /* Create a target socket */
     if (connect_to_target(&target_socket, target.host, target.port) < 0) {
+        handle_503(target_socket, new_connection);
         return NULL;
     }
 
@@ -64,6 +65,31 @@ void *handle_connection(void *p_new_connection) {
     close(new_connection);
 
     return NULL;
+}
+
+void handle_503(struct socket_connection target_socket, int new_connection) {
+    char *html =
+        "<!DOCTYPE html>"
+        "<html lang=\"en\">"
+        "<head>"
+        "<title>503</title>"
+        "</head>"
+        "<body>"
+        "<h1><center>Service Unavailable</center></h1>"
+        "<h2><center>503</center></h2>"
+        "</body>"
+        "</html>";
+    char response[16384] =
+        "HTTP/1.1 503 Service unavailable\n\r"
+        "Content-Type: text/html charset=utf-8\n\r"
+        "\n\r";
+    strcat(response, html);
+
+    send(new_connection, response, strlen(response), 0);
+
+    /* close sockets */
+    close(target_socket.socket_fd);
+    close(new_connection);
 }
 
 void *thread_handler(void *arg) {
@@ -91,38 +117,3 @@ void connection_loop(struct socket_connection client_socket) {
         enqueue_connection(p_new_connection);
     }
 }
-
-// // TODO: use malloc to use memory better
-// // 1 - was a health report route , 1 - otherwise
-// int handle_health_check_report_route(char *request_buffer, int
-// new_connection) {
-//     int flag = 0;  // return flag
-
-//     char *request_copy = (char *)malloc(strlen(request_buffer) + 1);
-//     strcpy(request_copy, request_buffer);
-//     char *url = parse_url(request_copy);
-
-//     if (strcmp(url, "/__health") == 0) {
-//         flag = 1;
-
-//         logger("Health report route called!");
-//         const int response_buffer_size = 262144;  // 256 KB
-//         char response[response_buffer_size];
-
-//         char response_body[65536];
-//         get_health_in_json(response_body);
-//         char response_body_length_str[5];
-//         sprintf(response_body_length_str, "%d", (int)strlen(response_body));
-
-//         add_status_code_to_response(response, "200", "HTTP/1.1");
-//         add_header_to_response(response, "Content-Type", "application/json");
-//         add_header_to_response(response, "Content-Length",
-//                                response_body_length_str);
-//         add_content_to_response(response, response_body);
-
-//         send(new_connection, response, sizeof(response), 0);
-//     }
-
-//     free(request_copy);
-//     return flag;
-// }
