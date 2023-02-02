@@ -14,6 +14,9 @@
     "round_robin.h": "c",
     "health_check.h": "c",
     "utils.h": "c",
-    "target_group.h": "c"
+    "target_group.h": "c",
+    "config.h": "c",
+    "pthread.h": "c",
+    "config_file.h": "c"
   }
 }

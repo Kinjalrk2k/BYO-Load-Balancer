@@ -10,15 +10,6 @@
 
 #define HEALTH_CHECK_INTERVAL 30  // in seconds
 
-struct target_group {
-    char path[100];
-    int priority;
-    struct round_robin_node *round_robin_head;
-    struct round_robin_node *round_robin_current;
-    int is_default;
-    pthread_mutex_t round_robin_mutex;
-};
-
 struct target_group_list_node {
     struct target_group tg;
     struct target_group_list_node *next;

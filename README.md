@@ -47,3 +47,7 @@
 ### Passive Health checks and reports
 
 ### Handle 503
+
+### Handle Health Report
+
+### Reading configuration from a file

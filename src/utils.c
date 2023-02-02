@@ -36,3 +36,29 @@ void add_content_to_response(char *response, char *content) {
     strcat(response, "\n");
     strcat(response, content);
 }
+
+char *ltrim(char *s) {
+    while (isspace(*s)) s++;
+    return s;
+}
+
+char *rtrim(char *s) {
+    char *back = s + strlen(s);
+    while (isspace(*--back))
+        ;
+    *(back + 1) = '\0';
+    return s;
+}
+
+char *trim(char *s) { return rtrim(ltrim(s)); }
+
+int str_starts_with(const char *a, const char *b) {
+    if (strncmp(a, b, strlen(b)) == 0) return 1;
+    return 0;
+}
+
+int str_ends_with(const char *a, const char *b) {
+    const char *test_on = a + strlen(a) - strlen(b);
+    if (strcmp(test_on, b) == 0) return 1;
+    return 0;
+}
