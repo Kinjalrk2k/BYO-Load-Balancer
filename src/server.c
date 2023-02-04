@@ -17,7 +17,7 @@ int create_server(struct socket_connection *server_socket, char *host,
         return -2;
     }
 
-    if (listen_to_socket(*server_socket, BACKLOG) < 0) {
+    if (listen_to_socket(*server_socket, backlog) < 0) {
         perror("Failed to listen to server socket");
         return -3;
     }

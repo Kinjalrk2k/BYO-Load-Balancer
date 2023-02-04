@@ -12,6 +12,7 @@
 #include "../include/config.h"
 #include "../include/config_file.h"
 #include "../include/connection.h"
+#include "../include/env.h"
 #include "../include/health_check.h"
 #include "../include/logging.h"
 #include "../include/networking.h"
@@ -28,6 +29,10 @@ int main(int argc, char *argv[]) {
     logger("[STARTUP] Reading Config file");
     read_config_file();
 
+    // set up env vars
+    logger("[STARTUP] Setup Environment");
+    setup_env();
+
     // initialize the thread pool
     logger("[STARTUP] Initializing thread pools");
     init_thread_pool();
@@ -38,7 +43,8 @@ int main(int argc, char *argv[]) {
     build_passive_health_check_thread();
 
     /* Create a listening socket */
-    if (create_server(&client_socket, "localhost", 2209, 10) < 0) {
+    if (create_server(&client_socket, get_env_host(), get_env_port(),
+                      get_env_backlog()) < 0) {
         perror("Failed to create the server");
         return 1;
     }

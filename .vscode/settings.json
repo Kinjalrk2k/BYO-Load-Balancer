@@ -17,6 +17,7 @@
     "target_group.h": "c",
     "config.h": "c",
     "pthread.h": "c",
-    "config_file.h": "c"
+    "config_file.h": "c",
+    "env.h": "c"
   }
 }
