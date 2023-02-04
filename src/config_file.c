@@ -55,9 +55,14 @@ void read_config_file() {
             char *port_str = strtok(NULL, " ");
             int port = atoi(port_str);
 
+            char ip[16];
+            if (hostname_to_ip(host, port, ip) < 0) {
+                continue;  // skip
+            }
+
             struct target_backend server;
             strcpy(server.name, serverName);
-            strcpy(server.host, host);
+            strcpy(server.host, ip);
             server.port = port;
             server.is_healthy = 1;
             insert_to_round_robin(&curr_target_group.round_robin_head, server);

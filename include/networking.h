@@ -21,6 +21,8 @@ struct socket_connection {
     struct socket_name_info socket_name;
 };
 
+int hostname_to_ip(char *hostname, unsigned int port, char *ip);
+
 int get_socket(struct socket_connection *server_socket, char *address,
                unsigned int port);
 

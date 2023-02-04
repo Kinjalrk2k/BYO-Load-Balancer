@@ -1,5 +1,35 @@
 #include "../include/networking.h"
 
+int hostname_to_ip(char *hostname, unsigned int port, char *ip) {
+    struct addrinfo hints, *servinfo, *p;
+    struct sockaddr_in *h;
+    int rv;
+
+    char port_str[7];
+    sprintf(port_str, "%d", port);
+
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC;  // use AF_INET6 to force IPv6
+    hints.ai_socktype = SOCK_STREAM;
+
+    if ((rv = getaddrinfo(hostname, port_str, &hints, &servinfo)) != 0) {
+        // fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+        perror("Cannot resolve address");
+        return -1;
+    }
+
+    // loop through all the results
+    for (p = servinfo; p != NULL; p = p->ai_next) {
+        h = (struct sockaddr_in *)p->ai_addr;
+        // logger("%s", inet_ntoa(h->sin_addr));
+        strcpy(ip, inet_ntoa(h->sin_addr));
+    }
+
+    freeaddrinfo(servinfo);  // cleanup!
+
+    return 0;
+}
+
 int get_socket(struct socket_connection *server_socket, char *address,
                unsigned int port) {
     /**

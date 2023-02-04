@@ -2,7 +2,12 @@
 
 int create_server(struct socket_connection *server_socket, char *host,
                   unsigned int port, unsigned int backlog) {
-    if (get_socket(&(*server_socket), host, port) < 0) {
+    char ip[16];
+    if (hostname_to_ip(host, port, ip) < 0) {
+        return -4;
+    }
+
+    if (get_socket(&(*server_socket), ip, port) < 0) {
         perror("Failed to initialize server socket");
         return -1;
     }
