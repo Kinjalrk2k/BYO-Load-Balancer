@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     /* Create a listening socket */
     if (create_server(&client_socket, get_env_host(), get_env_port(),
                       get_env_backlog()) < 0) {
-        perror("Failed to create the server");
+        log_err("Failed to create the server");
         return 1;
     }
 

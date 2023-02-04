@@ -13,15 +13,13 @@ int hostname_to_ip(char *hostname, unsigned int port, char *ip) {
     hints.ai_socktype = SOCK_STREAM;
 
     if ((rv = getaddrinfo(hostname, port_str, &hints, &servinfo)) != 0) {
-        // fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-        perror("Cannot resolve address");
+        log_err("Cannot resolve address %s:%d", hostname, port);
         return -1;
     }
 
     // loop through all the results
     for (p = servinfo; p != NULL; p = p->ai_next) {
         h = (struct sockaddr_in *)p->ai_addr;
-        // logger("%s", inet_ntoa(h->sin_addr));
         strcpy(ip, inet_ntoa(h->sin_addr));
     }
 
@@ -38,7 +36,7 @@ int get_socket(struct socket_connection *server_socket, char *address,
      */
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_fd == -1) {
-        perror("Failed to initiate server socket");
+        log_err("Failed to initiate server socket");
         return -1;
     }
 
@@ -49,7 +47,7 @@ int get_socket(struct socket_connection *server_socket, char *address,
     int option_value = 1;
     if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &option_value,
                    sizeof(option_value)) == -1) {
-        perror("Failed to set server socket options");
+        log_err("Failed to set server socket options");
         close(socket_fd);
         return -2;
     }
@@ -77,7 +75,7 @@ int get_socket(struct socket_connection *server_socket, char *address,
     if (getnameinfo((struct sockaddr *)&server_address, server_address_size,
                     host_buffer, sizeof(host_buffer), service_buffer,
                     sizeof(service_buffer), NI_NUMERICSERV) != 0) {
-        perror("Failed to fetch information about the server");
+        log_err("Failed to fetch information about the server");
         return -3;
     }
 
@@ -98,7 +96,7 @@ int bind_to_socket(struct socket_connection server_socket) {
      */
     if (bind(server_socket.socket_fd, (struct sockaddr *)&server_socket.address,
              server_address_size) < 0) {
-        perror("Failed to bind the address with the server socket");
+        log_err("Failed to bind the address with the server socket");
         close(server_socket.socket_fd);
         return -1;
     }
@@ -116,7 +114,8 @@ int connect_to_socket(struct socket_connection server_socket) {
     if (connect(server_socket.socket_fd,
                 (struct sockaddr *)&server_socket.address,
                 server_address_size) < 0) {
-        perror("Failed to connect the address with the server socket");
+        log_err("Failed to connect %s:%s", server_socket.socket_name.host,
+                server_socket.socket_name.port);
         close(server_socket.socket_fd);
         return -1;
     }
@@ -132,7 +131,8 @@ int listen_to_socket(struct socket_connection server_socket,
      */
     int listen_status = listen(server_socket.socket_fd, backlog);
     if (listen_status < 0) {
-        logger("Failed to initiate listening on the server socket.");
+        log_err("Failed to listen on %s:%s", server_socket.socket_name.host,
+                server_socket.socket_name.port);
         close(server_socket.socket_fd);
         return -1;
     }

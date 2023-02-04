@@ -7,7 +7,7 @@ void read_config_file() {
     file_ptr = fopen("byolb.config", "r");
 
     if (file_ptr == NULL) {
-        logger("Failed to open the byolb.config file");
+        log_err("Failed to open the byolb.config file");
         return;
     }
 

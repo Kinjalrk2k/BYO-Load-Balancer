@@ -50,7 +50,7 @@ int handle_routing_target(char *request_buffer, struct target_backend *p_target,
 
     // health report
     if (strcmp(url, "/__health") == 0) {
-        logger("%s => Health Report", url);
+        logger("[ROUTE] %s => Health Report", url);
         handle_health_route(new_connection);
         return 1;  // already handled
     }
@@ -62,8 +62,8 @@ int handle_routing_target(char *request_buffer, struct target_backend *p_target,
                               tg->round_robin_mutex);
 
     // request logging
-    logger("%s ~~> %s => %s:%d <%d>", url, tg->path, target.host, target.port,
-           target.is_healthy);
+    logger("[ROUTE] %s ~~> %s => %s:%d <%d>", url, tg->path, target.host,
+           target.port, target.is_healthy);
 
     *p_target = target;
     free(request_copy);
