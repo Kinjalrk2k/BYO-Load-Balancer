@@ -3,6 +3,9 @@ FROM ubuntu:focal
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install build-essential cmake -y --no-install-recommends
 
+# for debugging!
+RUN apt-get install -y iputils-ping curl
+
 WORKDIR /byolb
 
 COPY . .
@@ -15,5 +18,4 @@ RUN mkdir -p /etc/opt/byolb
 
 VOLUME [ "/etc/opt/byolb" ]
 
-# CMD [ "bash" ]
-ENTRYPOINT [ "bash" ]
+ENTRYPOINT [ "./build/src/lb" ]

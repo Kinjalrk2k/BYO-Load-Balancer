@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  echo0:
+    image: ealen/echo-server
+    networks:
+      - lbnet
+
+  echo1:
+    image: ealen/echo-server
+    networks:
+      - lbnet
+
+  echo2:
+    image: ealen/echo-server
+    networks:
+      - lbnet
+
+  lb:
+    image: kinjalrk2k/byolb:latest
+    ports:
+      - 2000:2209
+    networks:
+      - lbnet
+    volumes:
+      - ./:/etc/opt/byolb:ro
+
+networks:
+  lbnet:
+    driver: bridge
