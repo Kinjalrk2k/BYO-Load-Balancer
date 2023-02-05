@@ -2,4 +2,4 @@
 
 cmake --build ./build --target clean
 cmake --build ./build --target all
-./build/src/lb
+CONFIG_FILE=byolb.config ./build/src/lb

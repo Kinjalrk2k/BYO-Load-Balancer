@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "start:serverA": "PORT=5000 npm --prefix Echo-Server start",
+    "start:serverB": "PORT=5001 npm --prefix Echo-Server start",
+    "start:serverC": "PORT=5002 npm --prefix Echo-Server start",
+    "start:serverD": "PORT=5003 npm --prefix Echo-Server start",
+    "start:serverE": "PORT=5004 npm --prefix Echo-Server start",
+    "start": "concurrently npm:start:* -c dim"
+  }
+}
