@@ -4,10 +4,10 @@ void read_config_file() {
     FILE *file_ptr;
     char line[1024];
 
-    file_ptr = fopen("byolb.config", "r");
+    file_ptr = fopen(get_env_config_file(), "r");
 
     if (file_ptr == NULL) {
-        log_err("Failed to open the byolb.config file");
+        log_err("Failed to open the '%s' file", get_env_config_file());
         return;
     }
 

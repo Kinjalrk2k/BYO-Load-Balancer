@@ -25,13 +25,13 @@ int main(int argc, char *argv[]) {
     logger("[STARTUP] Initializing");
     struct socket_connection client_socket;
 
-    // read configuration from file
-    logger("[STARTUP] Reading Config file");
-    read_config_file();
-
     // set up env vars
     logger("[STARTUP] Setup Environment");
     setup_env();
+
+    // read configuration from file
+    logger("[STARTUP] Reading Config file");
+    read_config_file();
 
     // initialize the thread pool
     logger("[STARTUP] Initializing thread pools");

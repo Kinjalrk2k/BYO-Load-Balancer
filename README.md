@@ -16,6 +16,12 @@
 ./scripts/run.sh
 ```
 
+- Run with the config file
+
+```sh
+CONFIG_FILE=byolb.config LOG_ERRORS=1 ./scripts/run.sh
+```
+
 ## Learning
 
 ### Low level Networking

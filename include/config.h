@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "./env.h"
+
 struct target_backend {
     char name[100];
     char host[INET6_ADDRSTRLEN];

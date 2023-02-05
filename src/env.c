@@ -4,6 +4,7 @@ unsigned int port;
 unsigned int backlog;
 char *host;
 unsigned int log_errors;
+char *config_file;
 
 void setup_env() {
     host = getenv("HOST");
@@ -32,6 +33,12 @@ void setup_env() {
         strcpy(log_errors_str, "0");
     }
     log_errors = atoi(log_errors_str);
+
+    config_file = getenv("CONFIG_FILE");
+    if (config_file == NULL) {
+        config_file = (char *)(malloc(100));
+        strcpy(config_file, "/etc/opt/byolb/byolb.config");
+    }
 }
 
 unsigned int get_env_port() { return port; }
@@ -41,3 +48,5 @@ unsigned int get_env_backlog() { return backlog; }
 char *get_env_host() { return host; }
 
 unsigned int get_env_log_errors() { return log_errors; }
+
+char *get_env_config_file() { return config_file; }
