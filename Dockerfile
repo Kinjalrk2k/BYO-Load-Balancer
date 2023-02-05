@@ -11,4 +11,9 @@ RUN ./scripts/clean.sh
 RUN cmake --build ./build --target clean
 RUN cmake --build ./build --target all
 
-CMD [ "./build/src/lb" ]
+RUN mkdir -p /etc/opt/byolb
+
+VOLUME [ "/etc/opt/byolb" ]
+
+# CMD [ "bash" ]
+ENTRYPOINT [ "bash" ]
