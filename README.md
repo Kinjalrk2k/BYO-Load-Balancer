@@ -2,6 +2,10 @@
 
 > (Bring Your Own) Load Balancer
 
+## Blog
+
+Read the blog post about this application [here](https://blog.kinjal.dev/bring-your-own-load-balancer)
+
 ## Developing
 
 - To initialize or clean the build directory
