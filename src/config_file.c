@@ -1,5 +1,9 @@
 #include "../include/config_file.h"
 
+/**
+ * @brief read the cofiguration from the file and set the data structures
+ *
+ */
 void read_config_file() {
     FILE *file_ptr;
     char line[1024];

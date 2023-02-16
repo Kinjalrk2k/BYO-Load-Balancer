@@ -11,7 +11,9 @@ struct connection_queue_node {
 };
 
 void enqueue_connection(int *client_socket_fd);
+
 int *dequeue_connection();
+
 int connection_queue_size();
 
 #endif  // QUEUE_H

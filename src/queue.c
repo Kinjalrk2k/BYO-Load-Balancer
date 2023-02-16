@@ -1,11 +1,22 @@
 #include "../include/queue.h"
 
+/**
+ * @brief pointers to handle the queue
+ */
 struct connection_queue_node *connection_queue_head = NULL;
 struct connection_queue_node *connection_queue_tail = NULL;
 
+/**
+ * @brief mutex and condition variables for thread safety
+ */
 pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t queue_condition_variable = PTHREAD_COND_INITIALIZER;
 
+/**
+ * @brief thread safe Enqueue operation
+ *
+ * @param client_socket_fd
+ */
 void enqueue_connection(int *client_socket_fd) {
     pthread_mutex_lock(&queue_mutex);
 
@@ -17,6 +28,7 @@ void enqueue_connection(int *client_socket_fd) {
     new_node->next = NULL;
 
     if (connection_queue_tail == NULL) {
+        // empty queue
         connection_queue_head = new_node;
     } else {
         connection_queue_tail->next = new_node;
@@ -27,6 +39,11 @@ void enqueue_connection(int *client_socket_fd) {
     pthread_cond_signal(&queue_condition_variable);
 }
 
+/**
+ * @brief thread safe Dequeue operation
+ *
+ * @return int*
+ */
 int *dequeue_connection() {
     pthread_mutex_lock(&queue_mutex);
 
@@ -51,6 +68,11 @@ int *dequeue_connection() {
     }
 }
 
+/**
+ * @brief get the queue size
+ * @deprecated
+ * @return int
+ */
 int connection_queue_size() {
     pthread_mutex_lock(&queue_mutex);
     int count = 0;

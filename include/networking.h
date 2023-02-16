@@ -27,6 +27,7 @@ int get_socket(struct socket_connection *server_socket, char *address,
                unsigned int port);
 
 int bind_to_socket(struct socket_connection server_socket);
+
 int connect_to_socket(struct socket_connection server_socket);
 
 int listen_to_socket(struct socket_connection server_socket,

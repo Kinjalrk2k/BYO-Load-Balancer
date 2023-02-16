@@ -1,5 +1,11 @@
 #include "../include/connection.h"
 
+/**
+ * @brief handle a single connection
+ *
+ * @param p_new_connection
+ * @return void*
+ */
 void *handle_connection(void *p_new_connection) {
     int new_connection = *((int *)p_new_connection);
     free(p_new_connection);
@@ -39,7 +45,14 @@ void *handle_connection(void *p_new_connection) {
     return NULL;
 }
 
-// send 1 if already handled or else send 0, if sent -1, then mishandled
+/**
+ * @brief handling the routing to target groups logic
+ * return 1 if already handled or else send 0, if sent -1, then mishandled
+ * @param request_buffer
+ * @param p_target
+ * @param new_connection
+ * @return int
+ */
 int handle_routing_target(char *request_buffer, struct target_backend *p_target,
                           int new_connection) {
     int already_handled = 0;  // return flag
@@ -70,6 +83,12 @@ int handle_routing_target(char *request_buffer, struct target_backend *p_target,
     return already_handled;
 }
 
+/**
+ * @brief handle 503 errors gracefully
+ *
+ * @param target_socket
+ * @param new_connection
+ */
 void handle_503(struct socket_connection target_socket, int new_connection) {
     char *html =
         "<!DOCTYPE html>"
@@ -95,6 +114,11 @@ void handle_503(struct socket_connection target_socket, int new_connection) {
     close(new_connection);
 }
 
+/**
+ * @brief handle the health check route
+ *
+ * @param new_connection
+ */
 void handle_health_route(int new_connection) {
     char response[262144];
 
@@ -113,6 +137,12 @@ void handle_health_route(int new_connection) {
     close(new_connection);
 }
 
+/**
+ * @brief thread handler to handle the connections in a thread
+ *
+ * @param arg
+ * @return void*
+ */
 void *thread_handler(void *arg) {
     while (1) {  // do not kill the threads
         int *p_new_connection = dequeue_connection();
@@ -124,6 +154,11 @@ void *thread_handler(void *arg) {
     }
 }
 
+/**
+ * @brief loop to wait for connections
+ *
+ * @param client_socket
+ */
 void connection_loop(struct socket_connection client_socket) {
     int new_connection;
 

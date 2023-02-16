@@ -1,11 +1,16 @@
 #include "../include/env.h"
 
-unsigned int port;
-unsigned int backlog;
-char *host;
-unsigned int log_errors;
-char *config_file;
+// variables to store the env variables
+unsigned int port;        // default - 2209
+unsigned int backlog;     // default - 10
+char *host;               // default - localhost
+unsigned int log_errors;  // default - 0
+char *config_file;        // default - /etc/opt/byolb/byolb.config
 
+/**
+ * @brief Set the up env variables
+ *
+ */
 void setup_env() {
     host = getenv("HOST");
     if (host == NULL) {
@@ -40,6 +45,10 @@ void setup_env() {
         strcpy(config_file, "/etc/opt/byolb/byolb.config");
     }
 }
+
+/**
+ * Getter functions
+ */
 
 unsigned int get_env_port() { return port; }
 

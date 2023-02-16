@@ -18,6 +18,12 @@ int logger(char *format, ...) {
     return response;
 }
 
+/**
+ * @brief log errors with [ERROR] label
+ *
+ * @param format
+ * @param ...
+ */
 void log_err(char *format, ...) {
     va_list args;
     va_start(args, format);

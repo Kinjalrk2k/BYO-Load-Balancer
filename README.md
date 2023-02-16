@@ -30,32 +30,16 @@ CONFIG_FILE=byolb.config LOG_ERRORS=1 ./scripts/run.sh
 
 ### A basic Reverse Proxy
 
-### Backlog and connection queue
-
-### Handling connections in threads
-
-### Thread Pool
-
-### Thread safe Request Queue
-
-### Condition Variables to wait on thread
-
-### Circular Linked List
+### Multi-Threading and Request Queue
 
 ### Round Robin Algorithm with unhealthy targets
 
-### Linked List
-
 ### Target Groups with priority
 
-### Regex path matching for target groups
+### Passive Health checks
 
-### Passive Health checks and reports
+### Handling special request/response
 
-### Handle 503
+### Configuration
 
-### Handle Health Report
-
-### Reading configuration from a file
-
-### Dealing with Environment Variables
+### Containerizing

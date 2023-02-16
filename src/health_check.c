@@ -1,6 +1,13 @@
 #include "../include/health_check.h"
 
-// 0 - unhealthy , 1 - healthy
+/**
+ * @brief check health of a target
+ * 0 - unhealthy , 1 - healthy
+ * Here the route route is called to check whether it returns 200 OK
+ *
+ * @param target
+ * @return int
+ */
 int health_check_target(struct target_backend target) {
     struct socket_connection target_socket;
     char response[BUFSIZE];

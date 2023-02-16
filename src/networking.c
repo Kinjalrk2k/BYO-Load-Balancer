@@ -1,5 +1,13 @@
 #include "../include/networking.h"
 
+/**
+ * @brief convert hostnames to IP addressses
+ *
+ * @param hostname
+ * @param port
+ * @param ip
+ * @return int
+ */
 int hostname_to_ip(char *hostname, unsigned int port, char *ip) {
     struct addrinfo hints, *servinfo, *p;
     struct sockaddr_in *h;
@@ -8,8 +16,12 @@ int hostname_to_ip(char *hostname, unsigned int port, char *ip) {
     char port_str[7];
     sprintf(port_str, "%d", port);
 
+    /**
+     * @brief cycle to all available IPs
+     * @see https://man7.org/linux/man-pages/man3/getaddrinfo.3.html
+     */
     memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_UNSPEC;  // use AF_INET6 to force IPv6
+    hints.ai_family = AF_UNSPEC;  // AF_UNSPEC to choose from IPv4 and IPv6
     hints.ai_socktype = SOCK_STREAM;
 
     if ((rv = getaddrinfo(hostname, port_str, &hints, &servinfo)) != 0) {
@@ -28,6 +40,14 @@ int hostname_to_ip(char *hostname, unsigned int port, char *ip) {
     return 0;
 }
 
+/**
+ * @brief Build the server socket address along with the address
+ *
+ * @param server_socket
+ * @param address
+ * @param port
+ * @return int
+ */
 int get_socket(struct socket_connection *server_socket, char *address,
                unsigned int port) {
     /**
@@ -87,6 +107,12 @@ int get_socket(struct socket_connection *server_socket, char *address,
     return 0;
 }
 
+/**
+ * @brief assign address to the socket
+ *
+ * @param server_socket
+ * @return int
+ */
 int bind_to_socket(struct socket_connection server_socket) {
     socklen_t server_address_size = sizeof(server_socket.address);
 
@@ -104,6 +130,12 @@ int bind_to_socket(struct socket_connection server_socket) {
     return 0;
 }
 
+/**
+ * @brief connect to the socket for data transfer
+ *
+ * @param server_socket
+ * @return int
+ */
 int connect_to_socket(struct socket_connection server_socket) {
     socklen_t server_address_size = sizeof(server_socket.address);
 
